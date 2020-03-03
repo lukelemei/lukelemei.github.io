@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://lukelemei.github.io</id>
+    <title>Gridea</title>
+    <updated>2020-03-03T13:35:42.537Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://lukelemei.github.io"/>
+    <link rel="self" href="https://lukelemei.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://lukelemei.github.io/images/avatar.png</logo>
+    <icon>https://lukelemei.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[CentOS6.X 安装zabbix-agent]]></title>
+        <id>https://lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/</id>
+        <link href="https://lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/">
+        </link>
+        <updated>2020-03-03T13:32:13.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>1.安装zabbix-agent</strong></p>
+<p>rpm -ivh zabbix-agent-4.0.14-1.el7.x86_64.rpm</p>
+<p><strong>2.修改</strong>**/etc/zabbix/zabbix_agentd.conf文件：**</p>
+<p><strong>执行如下命令</strong></p>
+<p>sed -i 's/Server=127.0.0.1/Server=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p>sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p>执行完成后，打开文件检查下 Server和ServerActive两个选项的IP是否已经修改为35.1.196.100</p>
+<p><strong>3.启动服务并设置为开启启动</strong></p>
+<p>service zabbix-agent start 启动服务</p>
+<p>chkconfig zabbix-agent on 开启启动</p>
+<p><strong>4.如果已经开启防火墙，需在防火墙放行10050端口，未开启防火墙请忽略</strong></p>
+<p>放行端口命令：<br>
+iptables -A INPUT -p tcp --dport 10050 -j ACCEPT<br>
+<strong>5.关闭selinux</strong></p>
+<p>执行命令：setenforce 0(立即生效)</p>
+<p>并修改配置文件/etc/selinux/config 将红框中selinux设置为disabled(重启后，永久生效)<img src="https://cdn.nlark.com/yuque/0/2019/png/95634/1573201467290-f6624a8f-77a1-402c-85e6-0327f9524610.png?x-oss-process=image/resize,w_1500" alt="截屏2019-11-08下午4.23.59.png" title="截屏2019-11-08下午4.23.59.png" loading="lazy"></p>
+]]></content>
+    </entry>
+</feed>

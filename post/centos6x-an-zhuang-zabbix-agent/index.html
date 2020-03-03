@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CentOS6.X 安装zabbix-agent | Gridea</title>
+<link rel="shortcut icon" href="https://lukelemei.github.io/favicon.ico?v=1583242500754">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lukelemei.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lukelemei.github.io">
+  <img class="avatar" src="https://lukelemei.github.io/images/avatar.png?v=1583242500754" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              CentOS6.X 安装zabbix-agent
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2020-03-03 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p><strong>1.安装zabbix-agent</strong></p>
+<p>rpm -ivh zabbix-agent-4.0.14-1.el7.x86_64.rpm</p>
+<p><strong>2.修改</strong>**/etc/zabbix/zabbix_agentd.conf文件：**</p>
+<p><strong>执行如下命令</strong></p>
+<p>sed -i 's/Server=127.0.0.1/Server=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p>sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p>执行完成后，打开文件检查下 Server和ServerActive两个选项的IP是否已经修改为35.1.196.100</p>
+<p><strong>3.启动服务并设置为开启启动</strong></p>
+<p>service zabbix-agent start 启动服务</p>
+<p>chkconfig zabbix-agent on 开启启动</p>
+<p><strong>4.如果已经开启防火墙，需在防火墙放行10050端口，未开启防火墙请忽略</strong></p>
+<p>放行端口命令：<br>
+iptables -A INPUT -p tcp --dport 10050 -j ACCEPT<br>
+<strong>5.关闭selinux</strong></p>
+<p>执行命令：setenforce 0(立即生效)</p>
+<p>并修改配置文件/etc/selinux/config 将红框中selinux设置为disabled(重启后，永久生效)<img src="https://cdn.nlark.com/yuque/0/2019/png/95634/1573201467290-f6624a8f-77a1-402c-85e6-0327f9524610.png?x-oss-process=image/resize,w_1500" alt="截屏2019-11-08下午4.23.59.png" title="截屏2019-11-08下午4.23.59.png" loading="lazy"></p>
+
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lukelemei.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
