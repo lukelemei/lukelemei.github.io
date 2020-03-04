@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-04T09:09:00.309Z</updated>
+    <updated>2020-03-04T09:12:34.304Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
     <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
@@ -21,7 +21,8 @@
 <p><strong>2.修改</strong>**/etc/zabbix/zabbix_agentd.conf文件：**</p>
 <p><strong>执行如下命令</strong></p>
 <p>sed -i 's/Server=127.0.0.1/Server=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
-<p>sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p><img src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/1583313145230.jpg" alt="" loading="lazy"><br>
+sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
 <p>执行完成后，打开文件检查下 Server和ServerActive两个选项的IP是否已经修改为35.1.196.100</p>
 <p><strong>3.启动服务并设置为开启启动</strong></p>
 <p>service zabbix-agent start 启动服务</p>
@@ -31,7 +32,7 @@
 iptables -A INPUT -p tcp --dport 10050 -j ACCEPT<br>
 <strong>5.关闭selinux</strong></p>
 <p>执行命令：setenforce 0(立即生效)</p>
-<p>并修改配置文件/etc/selinux/config 将红框中selinux设置为disabled(重启后，永久生效)<img src="https://cdn.nlark.com/yuque/0/2019/png/95634/1573201467290-f6624a8f-77a1-402c-85e6-0327f9524610.png?x-oss-process=image/resize,w_1500" alt="截屏2019-11-08下午4.23.59.png" title="截屏2019-11-08下午4.23.59.png" loading="lazy"></p>
+<p>并修改配置文件/etc/selinux/config 将selinux设置为disabled(重启后，永久生效)</p>
 ]]></content>
     </entry>
 </feed>
