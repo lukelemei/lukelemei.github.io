@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>浩玩技术栈</title>
 <meta name="description" content="结合博主自身经验，专注分享运维技术文章！" />
-<link rel="shortcut icon" href="https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico?v=1583313148040">
+<link rel="shortcut icon" href="https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico?v=1583313497022">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -23,7 +23,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="ri-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://https://github.com/lukelemei/lukelemei.github.io">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png?v=1583313148040" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png?v=1583313497022" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">浩玩技术栈</h1>
       </div>
@@ -83,14 +83,16 @@
           2020-03-03 / 1 min read
         </div>
         
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/centos6x-an-zhuang-zabbix-agent.jpg" alt="">
+        
         <div class="post-content yue">
-          <p><strong>1.安装zabbix-agent</strong></p>
+          <p><img src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/1583313145230.jpg" alt="" loading="lazy"><br>
+<strong>1.安装zabbix-agent</strong></p>
 <p>rpm -ivh zabbix-agent-4.0.14-1.el7.x86_64.rpm</p>
 <p><strong>2.修改</strong>**/etc/zabbix/zabbix_agentd.conf文件：**</p>
 <p><strong>执行如下命令</strong></p>
 <p>sed -i 's/Server=127.0.0.1/Server=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
-<p><img src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/1583313145230.jpg" alt="" loading="lazy"><br>
-sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
+<p>sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
 <p>执行完成后，打开文件检查下 Server和ServerActive两个选项的IP是否已经修改为35.1.196.100</p>
 <p><strong>3.启动服务并设置为开启启动</strong></p>
 <p>service zabbix-agent start 启动服务</p>
@@ -104,6 +106,10 @@ iptables -A INPUT -p tcp --dport 10050 -j ACCEPT<br>
 
         </div>
 
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/hAmPSTdJ-/">
+            <span class="flex-auto">Linux</span>
+          </a>
         
 
 
