@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-04T09:07:09.677Z</updated>
+    <updated>2020-03-04T09:09:00.309Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
     <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
-    <subtitle>结合博主自身经验，专注分享运维技术文章，关注互联网！</subtitle>
+    <subtitle>结合博主自身经验，专注分享运维技术文章！</subtitle>
     <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
     <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 浩玩技术栈</rights>
