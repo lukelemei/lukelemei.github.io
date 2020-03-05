@@ -30,30 +30,26 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            结合博主自身经验，专注分享运维技术文章！
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#docker-%E7%BD%91%E7%BB%9C">Docker 网络</a></li>
+<li><a href="#dockerfile">Dockerfile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -97,23 +93,139 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="text-lg text-gray-700 mb-8">
-          <i class="ri-bookmark-2-line"></i> 标签云
-        </h2>
-        <div class="tags-container">
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">玩转 Docker（二）</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2020-03-05 / 5 min read
+        </div>
+        
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/wan-zhuan-dockerer.jpg" alt="">
+        
+        <div class="post-content yue">
+          <h4 id="docker-网络">Docker 网络</h4>
+<ul>
+<li>应用对外访问</li>
+</ul>
+<pre><code>-P:在49000-49900之间，随机映射一个端口
+-p：手动指定端口，宿主机的3303:3000（外部）
+</code></pre>
+<ul>
+<li>容器间网络通信</li>
+</ul>
+<pre><code>使用 --link参数
+创建一个数据库容器：
+docker run -d –namemysqldb mysql:5.6
+创建一个web容器并和数据库容器建立连接：
+docker run -d –name Webapp–p 8000:8080 –link mysqldb:MySQL tomcat
+上边的MySQL别名就类似dns解析的方式，我给这个容器起了个别名叫MySQL，我就通过这个别名就可以找到对应的这个mysqldb容器
+mysqldb容器和web容器建立互联关系。
+</code></pre>
+<h4 id="dockerfile">Dockerfile</h4>
+<p>Dockerfile是一个文本格式的配置文件，用户可以使用Dockerfile快速创建自定义镜像。</p>
+<ul>
+<li>参数解释</li>
+</ul>
+<pre><code>FROM
+格式：FROM&lt;image&gt;或FROM&lt;image&gt;:&lt;tag&gt;。
+解释：FROM是Dockerfile里的第一条指令（必须是），后面跟有效的镜像名（如果该镜像你的本地仓库没有则会从远程仓库Pull取）。然后后面的其它指令FROM的镜像中执行。
+
+MAINTAINER
+格式：MAINTAINER &lt;name&gt;
+解释：指定维护者信息。
+
+RUN
+格式：RUN &lt;command&gt;或 RUN[&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]。
+解释：运行命令，命令较长使可以使用\来换行。推荐使用上面数组的格式
+
+CMD
+格式：
+CMD [&quot;executable&quot;,&quot;param1&quot;,&quot;param2&quot;] 使用 exec 执行，推荐方式；
+CMD command param1 param2 在 /bin/sh 中执行，提供给需要交互的应用；
+CMD [&quot;param1&quot;,&quot;param2&quot;] 提供给ENTRYPOINT的默认参数；
+解释：
+CMD指定容器启动是执行的命令，每个Dockerfile只能有一条CMD命令，如果指定了多条，只有最后一条会被执行。如果你在启动容器的时候也指定的命令，那么会覆盖Dockerfile构建的镜像里面的CMD命令。
+
+ENTRYPOINT
+格式：
+   ENTRYPOINT [&quot;executable&quot;, &quot;param1&quot;,&quot;param2&quot;]
+   ENTRYPOINT command param1 param2（shell中执行）。
+解释：和CMD类似都是配置容器启动后执行的命令，并且不可被 docker run 提供的参数覆盖。
+每个 Dockerfile 中只能有一个 ENTRYPOINT，当指定多个时，只有最后一个起效。ENTRYPOINT没有CMD的可替换特性，也就是你启动容器的时候增加运行的命令不会覆盖ENTRYPOINT指定的命令。
+所以生产实践中我们可以同时使用ENTRYPOINT和CMD，
+例如：
+ENTRYPOINT [&quot;/usr/bin/rethinkdb&quot;]
+CMD [&quot;--help&quot;]
+
+USER
+格式：USER daemon
+解释：指定运行容器时的用户名和UID，后续的RUN指令也会使用这里指定的用户。
+
+EXPOSE
+格式：EXPOSE&lt;port&gt; [&lt;port&gt;...]
+解释：设置Docker容器内部暴露的端口号，如果需要外部访问，还需要启动容器时增加-p或者-P参数进行分配。
+
+ENV
+格式：ENV 
+ENV =&lt;value&gt; ...
+解释：设置环境变量，可以在RUN之前使用，然后RUN命令时调用，容器启动时这些环境变量都会被指定
+
+ADD
+格式：
+   ADD &lt;src&gt;... &lt;dest&gt;
+ADD [&quot;&quot;,... &quot;&quot;]
+解释：将指定的复制到容器文件系统中的
+所有拷贝到container中的文件和文件夹权限为0755,uid和gid为0
+如果文件是可识别的压缩格式，则docker会帮忙解压缩
+
+VOLUME
+格式：VOLUME [&quot;/data&quot;]
+解释：可以将本地文件夹或者其他container的文件夹挂载到container中。
+
+WORKDIR
+格式：WORKDIR/path/to/workdir
+解释：切换目录，为后续的RUN、CMD、ENTRYPOINT 指令配置工作目录。
+可以多次切换(相当于cd命令)，
+也可以使用多个WORKDIR 指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径。例如
+
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+则最终路径为 /a/b/c。
+ONBUILD
+ONBUILD 指定的命令在构建镜像时并不执行，而是在它的子镜像中执行
+
+ARG
+格式：ARG&lt;name&gt;[=&lt;default value&gt;]
+解释：ARG指定了一个变量在docker build的时候使用，可以使用--build-arg =来指定参数的值，不过如果构建的时候不指定就会报错。
+</code></pre>
+
+        </div>
+
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/y9WBB30Qn/">
+            <span class="flex-auto">Docker</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
           
-            <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/y9WBB30Qn/" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-              <span class="flex-auto">Docker</span>
-              <span class="flex rounded-full bg-gray-200 px-2 py-1 text-xs ml-1">1</span>
-            </a>
+
           
-            <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/hAmPSTdJ-/" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-              <span class="flex-auto">Linux</span>
-              <span class="flex rounded-full bg-gray-200 px-2 py-1 text-xs ml-1">1</span>
-            </a>
+            <div class="next-post">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/">
+                <h3 class="post-title">
+                  玩转Docker（一）
+                  <i class="ri-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
+
+        
+
       </div>
     </div>
 
