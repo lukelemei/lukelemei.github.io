@@ -1,22 +1,114 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
-    <title>浩玩技术栈</title>
-    <updated>2020-03-05T12:41:15.311Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
-    <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
-    <subtitle>结合博主自身经验，专注分享运维技术文章！</subtitle>
-    <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
-    <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2020, 浩玩技术栈</rights>
-    <entry>
-        <title type="html"><![CDATA[玩转Docker（一）]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/">
-        </link>
-        <updated>2020-03-05T12:39:30.000Z</updated>
-        <content type="html"><![CDATA[<h4 id="虚拟化与docker">虚拟化与docker</h4>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浩玩技术栈</title>
+<meta name="description" content="结合博主自身经验，专注分享运维技术文章！" />
+<link rel="shortcut icon" href="https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico?v=1583412072488">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
+<link rel="stylesheet" href="https://https://github.com/lukelemei/lukelemei.github.io/styles/main.css">
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="ri-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a href="https://https://github.com/lukelemei/lukelemei.github.io">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png?v=1583412072488" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">浩玩技术栈</h1>
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E4%B8%8Edocker">虚拟化与docker</a></li>
+<li><a href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">核心概念</a></li>
+<li><a href="#docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-%E9%95%9C%E5%83%8F">Docker常用命令-镜像</a></li>
+<li><a href="#docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-%E5%AE%B9%E5%99%A8">Docker常用命令-容器</a></li>
+<li><a href="#docker-%E4%BB%93%E5%BA%93">Docker 仓库</a></li>
+<li><a href="#%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E7%AB%99">镜像加速站</a></li>
+<li><a href="#docker-%E7%BD%91%E7%BB%9C">Docker 网络</a></li>
+<li><a href="#docker-%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86">Docker 数据管理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="ri-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu" style="animation-delay: 0.6000000000000001s">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700">Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a></div>
+    <a class="rss" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">玩转Docker（一）</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2020-03-05 / 8 min read
+        </div>
+        
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/wan-zhuan-dockeryi.jpg" alt="">
+        
+        <div class="post-content yue">
+          <h4 id="虚拟化与docker">虚拟化与docker</h4>
 <ul>
 <li>
 <p>虚拟化定义：虚拟化是一种资源管理技术，是将计算机的各种实体资源，如服务器、网络、内存及存储等，予以抽象、转换后呈现出来，打破实体结构间的不可切割的障碍，使用户可以比原本的配置更好的方式来应用这些资源。这些资源的新虚拟部分是不受现有资源的架设方式，地域或物理配置所限制。一般所指的虚拟化资源包括计算能力和数据存储。</p>
@@ -210,30 +302,129 @@ data/
 data/test/
 data/testSyc
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[CentOS6.X 安装zabbix-agent]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/">
-        </link>
-        <updated>2020-03-03T13:32:13.000Z</updated>
-        <content type="html"><![CDATA[<p><strong>1.安装zabbix-agent</strong></p>
-<p>rpm -ivh zabbix-agent-4.0.14-1.el7.x86_64.rpm</p>
-<p><strong>2.修改</strong>**/etc/zabbix/zabbix_agentd.conf文件：**</p>
-<p><strong>执行如下命令</strong></p>
-<p>sed -i 's/Server=127.0.0.1/Server=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
-<p>sed -i 's/ServerActive=127.0.0.1/ServerActive=35.1.196.100/g' /etc/zabbix/zabbix_agentd.conf</p>
-<p>执行完成后，打开文件检查下 Server和ServerActive两个选项的IP是否已经修改为35.1.196.100</p>
-<p><strong>3.启动服务并设置为开启启动</strong></p>
-<p>service zabbix-agent start 启动服务</p>
-<p>chkconfig zabbix-agent on 开启启动</p>
-<p><strong>4.如果已经开启防火墙，需在防火墙放行10050端口，未开启防火墙请忽略</strong></p>
-<p>放行端口命令：<br>
-iptables -A INPUT -p tcp --dport 10050 -j ACCEPT<br>
-<strong>5.关闭selinux</strong></p>
-<p>执行命令：setenforce 0(立即生效)</p>
-<p>并修改配置文件/etc/selinux/config 将selinux设置为disabled(重启后，永久生效)</p>
-]]></content>
-    </entry>
-</feed>
+
+        </div>
+
+        
+
+
+        <div class="flex justify-between py-8">
+          
+
+          
+            <div class="next-post">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/">
+                <h3 class="post-title">
+                  CentOS6.X 安装zabbix-agent
+                  <i class="ri-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+      </div>
+    </div>
+
+    <script src="https://https://github.com/lukelemei/lukelemei.github.io/media/prism.js"></script>  
+<script>
+
+Prism.highlightAll()
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+// This should probably be throttled.
+// Especially because it triggers during smooth scrolling.
+// https://lodash.com/docs/4.17.10#throttle
+// You could do like...
+// window.addEventListener("scroll", () => {
+//    _.throttle(doThatStuff, 100);
+// });
+// Only not doing it here to keep this Pen dependency-free.
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+const latestArticle = document.querySelector('.latest-article')
+const readMore = document.querySelector('.read-more')
+const indexPage = document.querySelector('.index-page')
+
+const isHome = location.pathname === '/'
+if (latestArticle) {
+  latestArticle.style.display = isHome ? 'block' : 'none'
+  readMore.style.display = isHome ? 'block' : 'none'
+  indexPage.style.display = isHome ? 'none' : 'block'
+}
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+</script>
+  
+  </body>
+</html>
