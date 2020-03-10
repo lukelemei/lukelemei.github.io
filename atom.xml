@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-05T12:58:38.592Z</updated>
+    <updated>2020-03-10T12:05:31.703Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
     <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
@@ -10,6 +10,103 @@
     <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
     <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 浩玩技术栈</rights>
+    <entry>
+        <title type="html"><![CDATA[Django Web开发入门（一）]]></title>
+        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/</id>
+        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
+        </link>
+        <updated>2020-03-10T12:04:15.000Z</updated>
+        <content type="html"><![CDATA[<h4 id="安装">安装</h4>
+<pre><code>pip3 install django==2.2.11 指定版本安装
+pip3 install django 不指定版本即安装最新版本，目前是3.0.4
+在python中导入django模块，能正确打印出版本，即安装成功
+PyDev console: starting.
+Python 3.7.3 (v3.7.3:ef4ec6ed12, Mar 25 2019, 16:52:21) 
+[Clang 6.0 (clang-600.0.57)] on darwin
+import django
+print(django.VERSION)
+(2, 2, 11, 'final', 0)
+</code></pre>
+<h4 id="建立项目">建立项目</h4>
+<ul>
+<li>命令:</li>
+</ul>
+<pre><code>django-admin startproject myproject 项目名称
+项目建成后，目录树如下
+├── manage.py
+└── myproject
+    ├── __init__.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py
+</code></pre>
+<h4 id="建立应用">建立应用</h4>
+<ul>
+<li>命令：</li>
+</ul>
+<pre><code>python manage.py startapp myapp 应用名称
+应用建成后，目录树如下：
+.
+├── __init__.py
+├── admin.py
+├── apps.py
+├── migrations
+│   └── __init__.py
+├── models.py
+├── tests.py
+└── views.py
+</code></pre>
+<h4 id="编写页面应用代码">编写页面应用代码</h4>
+<ul>
+<li>路由响应函数</li>
+<li>通过url将用户http访问与路由函数进行绑定</li>
+<li>在myproject/urls.py文件中，加入应用的urls.py的引用</li>
+</ul>
+<h4 id="范例演示">范例演示</h4>
+<p>演示一个简单的页面</p>
+<ul>
+<li>第一步：在myproject/myapp/views.py中建立路由响应函数</li>
+</ul>
+<pre><code>from django.shortcuts import render
+from django.http import HttpResponse
+# Create your views here.
+def welcome(request):
+	return HttpResponse(&quot;&lt;h1&gt;welcome to my first web!&lt;/h1&gt;&quot;)
+</code></pre>
+<ul>
+<li>第二步：通过URL将用户的http访问与路由函数绑定<br>
+在myproject/myapp 目录中，新建一个urls.py文件，管理应用的所有url映射</li>
+</ul>
+<pre><code>from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+	url(r'',views.welcome,name='first-url'),
+]
+</code></pre>
+<ul>
+<li>第三步：在myproject/urls.py文件中，添加一行，声明对应用myapp的urls.py文件的引用</li>
+</ul>
+<pre><code>from django.contrib import admin
+from django.urls import path
+from django.conf.urls import url  #本行为新增
+from django.conf.urls import include  #本行为新增
+urlpatterns = [
+	url(r'^app/',include('myapp.urls')),  #本行为新增
+    path('admin/', admin.site.urls),
+]
+</code></pre>
+<h4 id="启动页面访问">启动页面访问</h4>
+<p>通过内置的web服务器访问页面，仅用于开发测试环境</p>
+<ul>
+<li>命令：</li>
+</ul>
+<pre><code>python manage.py runserver 0:8002
+</code></pre>
+<p>如无报错，页面显示如下：<br>
+<a href="https://imgchr.com/i/8ifL79"><img src="https://s2.ax1x.com/2020/03/10/8ifL79.md.jpg" alt="8ifL79.md.jpg" loading="lazy"></a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[玩转 Docker（二）]]></title>
         <id>https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockerer/</id>
@@ -116,7 +213,7 @@ ARG
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[玩转Docker（一）]]></title>
+        <title type="html"><![CDATA[玩转 Docker（一）]]></title>
         <id>https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/</id>
         <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/">
         </link>
