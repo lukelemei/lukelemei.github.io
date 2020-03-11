@@ -30,30 +30,27 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            结合博主自身经验，专注分享运维技术文章！
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#binlog%E7%9A%84%E6%A8%A1%E5%BC%8F">binlog的模式</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A7%A3%E6%9E%90">数据的解析</a></li>
+<li><a href="#%E6%81%A2%E5%A4%8D%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D">恢复工具介绍</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -97,23 +94,78 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="text-lg text-gray-700 mb-8">
-          <i class="ri-bookmark-2-line"></i> 标签云
-        </h2>
-        <div class="tags-container">
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Binlog数据恢复的几种方法</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2020-03-11 / 1 min read
+        </div>
+        
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa.jpg" alt="">
+        
+        <div class="post-content yue">
+          <h4 id="binlog的模式">binlog的模式</h4>
+<ul>
+<li>Statement Level：Mysql5.7.7之前的版本默认的模式。基于sql语句复制，只会存储sql，不会存储数据，因此无法进行数据恢复，生产环境一般不用此模式</li>
+<li>Row Level：Mysql5.7.7之后的版本默认的模式。基于行的复制，并且会将每一条的数据变化记录到日志文件中。</li>
+<li>Mixed：混合模式</li>
+</ul>
+<p>查询模式命令</p>
+<pre><code>show variables like 'binlog_format';
+mysql&gt; show variables like 'binlog_format';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| binlog_format | ROW   |
++---------------+-------+
+1 row in set (0.00 sec)
+</code></pre>
+<h4 id="数据的解析">数据的解析</h4>
+<ul>
+<li>将binlog二进制文件解析成sql语句的过程</li>
+</ul>
+<h4 id="恢复工具介绍">恢复工具介绍</h4>
+<ul>
+<li>
+<p>正向恢复：</p>
+<ul>
+<li>mysqlbinlog<br>
+利用工具将插入的sql解析成反向的sql语句</li>
+</ul>
+</li>
+<li>
+<p>反向恢复</p>
+<ul>
+<li>binlog-rollback</li>
+<li>MyFlash</li>
+</ul>
+</li>
+<li>
+<p>延迟从库</p>
+</li>
+</ul>
+
+        </div>
+
+        
+
+
+        <div class="flex justify-between py-8">
           
-            <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/y9WBB30Qn/" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-              <span class="flex-auto">Docker</span>
-              <span class="flex rounded-full bg-gray-200 px-2 py-1 text-xs ml-1">1</span>
-            </a>
+
           
-            <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/hAmPSTdJ-/" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-              <span class="flex-auto">Linux</span>
-              <span class="flex rounded-full bg-gray-200 px-2 py-1 text-xs ml-1">1</span>
-            </a>
+            <div class="next-post">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
+                <h3 class="post-title">
+                  Django Web开发入门（一）
+                  <i class="ri-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
+
+        
+
       </div>
     </div>
 

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-10T12:05:31.703Z</updated>
+    <updated>2020-03-11T01:12:34.969Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
     <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
@@ -10,6 +10,54 @@
     <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
     <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 浩玩技术栈</rights>
+    <entry>
+        <title type="html"><![CDATA[Binlog数据恢复的几种方法]]></title>
+        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/</id>
+        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/">
+        </link>
+        <updated>2020-03-11T00:58:22.000Z</updated>
+        <content type="html"><![CDATA[<h4 id="binlog的模式">binlog的模式</h4>
+<ul>
+<li>Statement Level：Mysql5.7.7之前的版本默认的模式。基于sql语句复制，只会存储sql，不会存储数据，因此无法进行数据恢复，生产环境一般不用此模式</li>
+<li>Row Level：Mysql5.7.7之后的版本默认的模式。基于行的复制，并且会将每一条的数据变化记录到日志文件中。</li>
+<li>Mixed：混合模式</li>
+</ul>
+<p>查询模式命令</p>
+<pre><code>show variables like 'binlog_format';
+mysql&gt; show variables like 'binlog_format';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| binlog_format | ROW   |
++---------------+-------+
+1 row in set (0.00 sec)
+</code></pre>
+<h4 id="数据的解析">数据的解析</h4>
+<ul>
+<li>将binlog二进制文件解析成sql语句的过程</li>
+</ul>
+<h4 id="恢复工具介绍">恢复工具介绍</h4>
+<ul>
+<li>
+<p>正向恢复：</p>
+<ul>
+<li>mysqlbinlog<br>
+利用工具将插入的sql解析成反向的sql语句</li>
+</ul>
+</li>
+<li>
+<p>反向恢复</p>
+<ul>
+<li>binlog-rollback</li>
+<li>MyFlash</li>
+</ul>
+</li>
+<li>
+<p>延迟从库</p>
+</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Django Web开发入门（一）]]></title>
         <id>https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/</id>
