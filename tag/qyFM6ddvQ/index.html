@@ -30,30 +30,30 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            文章目录
+            结合博主自身经验，专注分享运维技术文章！
           </p>
-          <div class="toc-container hidden lg:block">
-            <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
-<li><a href="#%E5%BB%BA%E7%AB%8B%E9%A1%B9%E7%9B%AE">建立项目</a></li>
-<li><a href="#%E5%BB%BA%E7%AB%8B%E5%BA%94%E7%94%A8">建立应用</a></li>
-<li><a href="#%E7%BC%96%E5%86%99%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8%E4%BB%A3%E7%A0%81">编写页面应用代码</a></li>
-<li><a href="#%E8%8C%83%E4%BE%8B%E6%BC%94%E7%A4%BA">范例演示</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE">启动页面访问</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
+          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
           </div>
         </div>
       
@@ -97,143 +97,33 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
-        <h1 class="text-3xl font-bold lg:mt-16">Django Web开发入门（一）</h1>
-        <div class="text-sm text-gray-700 lg:my-8">
-          2020-03-10 / 3 min read
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
+        <h2 class="text-lg text-gray-700 mb-8">
+          <i class="ri-bookmark-line"></i> Python
+        </h2>
+        
+  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
+    
+      <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
+        <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="'https://https://github.com/lukelemei/lukelemei.github.io/post-images/django-web-kai-fa-ru-men-yi.jpg'">
         </div>
+      </a>
+    
+    <div class="content">
+      <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
+        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Django Web开发入门（一）</h2>
+      </a>
+      <div class="post-abstract text-gray-700 font-light my-4">
         
-          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/django-web-kai-fa-ru-men-yi.jpg" alt="">
-        
-        <div class="post-content yue">
-          <h4 id="安装">安装</h4>
-<pre><code>pip3 install django==2.2.11 指定版本安装
-pip3 install django 不指定版本即安装最新版本，目前是3.0.4
-在python中导入django模块，能正确打印出版本，即安装成功
-PyDev console: starting.
-Python 3.7.3 (v3.7.3:ef4ec6ed12, Mar 25 2019, 16:52:21) 
-[Clang 6.0 (clang-600.0.57)] on darwin
-import django
-print(django.VERSION)
-(2, 2, 11, 'final', 0)
-</code></pre>
-<h4 id="建立项目">建立项目</h4>
-<ul>
-<li>命令:</li>
-</ul>
-<pre><code>django-admin startproject myproject 项目名称
-项目建成后，目录树如下
-├── manage.py
-└── myproject
-    ├── __init__.py
-    ├── settings.py
-    ├── urls.py
-    └── wsgi.py
-</code></pre>
-<h4 id="建立应用">建立应用</h4>
-<ul>
-<li>命令：</li>
-</ul>
-<pre><code>python manage.py startapp myapp 应用名称
-应用建成后，目录树如下：
-.
-├── __init__.py
-├── admin.py
-├── apps.py
-├── migrations
-│   └── __init__.py
-├── models.py
-├── tests.py
-└── views.py
-</code></pre>
-<h4 id="编写页面应用代码">编写页面应用代码</h4>
-<ul>
-<li>路由响应函数</li>
-<li>通过url将用户http访问与路由函数进行绑定</li>
-<li>在myproject/urls.py文件中，加入应用的urls.py的引用</li>
-</ul>
-<h4 id="范例演示">范例演示</h4>
-<p>演示一个简单的页面</p>
-<ul>
-<li>第一步：在myproject/myapp/views.py中建立路由响应函数</li>
-</ul>
-<pre><code>from django.shortcuts import render
-from django.http import HttpResponse
-# Create your views here.
-def welcome(request):
-	return HttpResponse(&quot;&lt;h1&gt;welcome to my first web!&lt;/h1&gt;&quot;)
-</code></pre>
-<ul>
-<li>第二步：通过URL将用户的http访问与路由函数绑定<br>
-在myproject/myapp 目录中，新建一个urls.py文件，管理应用的所有url映射</li>
-</ul>
-<pre><code>from django.conf.urls import url
-from . import views
+      </div>
+      <div class="text-gray-400 text-sm font-light">2020-03-10 / 3 min read</div>
+    </div>
+  </section>
 
-urlpatterns = [
-	url(r'',views.welcome,name='first-url'),
-]
-</code></pre>
-<ul>
-<li>第三步：在myproject/urls.py文件中，添加一行，声明对应用myapp的urls.py文件的引用</li>
-</ul>
-<pre><code>from django.contrib import admin
-from django.urls import path
-from django.conf.urls import url  #本行为新增
-from django.conf.urls import include  #本行为新增
-urlpatterns = [
-	url(r'^app/',include('myapp.urls')),  #本行为新增
-    path('admin/', admin.site.urls),
-]
-</code></pre>
-<h4 id="启动页面访问">启动页面访问</h4>
-<p>通过内置的web服务器访问页面，仅用于开发测试环境</p>
-<ul>
-<li>命令：</li>
-</ul>
-<pre><code>python manage.py runserver 0:8002
-</code></pre>
-<p>如无报错，页面显示如下：<br>
-<a href="https://imgchr.com/i/8ifL79"><img src="https://s2.ax1x.com/2020/03/10/8ifL79.md.jpg" alt="8ifL79.md.jpg" loading="lazy"></a></p>
-
-        </div>
-
-        
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/qyFM6ddvQ/">
-            <span class="flex-auto">Python</span>
-          </a>
-        
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/AaTDk4JWV/">
-            <span class="flex-auto">Django</span>
-          </a>
-        
-
-
-        <div class="flex justify-between py-8">
-          
-            <div class="prev-post">
-              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/">
-                <h3 class="post-title">
-                  <i class="ri-arrow-left-line"></i>
-                  Binlog数据恢复的几种方法
-                </h3>
-              </a>
-            </div>
-          
-
-          
-            <div class="next-post">
-              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockerer/">
-                <h3 class="post-title">
-                  玩转 Docker（二）
-                  <i class="ri-arrow-right-line"></i>
-                </h3>
-              </a>
-            </div>
-          
-        </div>
-
-        
+        <div class="pagination-container animated fadeIn">
+  
+  
+</div>
 
       </div>
     </div>
