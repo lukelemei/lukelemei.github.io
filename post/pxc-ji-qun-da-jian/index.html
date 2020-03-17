@@ -40,9 +40,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#binlog%E7%9A%84%E6%A8%A1%E5%BC%8F">binlog的模式</a></li>
-<li><a href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A7%A3%E6%9E%90">数据的解析</a></li>
-<li><a href="#%E6%81%A2%E5%A4%8D%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D">恢复工具介绍</a></li>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#%E4%BC%98%E7%82%B9">优点</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点</a></li>
+<li><a href="#%E6%90%AD%E5%BB%BA">搭建</a></li>
+<li><a href="#%E9%AA%8C%E8%AF%81">验证</a></li>
 </ul>
 </li>
 </ul>
@@ -95,53 +97,75 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
-        <h1 class="text-3xl font-bold lg:mt-16">Binlog数据恢复的几种方法</h1>
+        <h1 class="text-3xl font-bold lg:mt-16">PXC集群搭建</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2020-03-11 / 1 min read
+          2020-03-17 / 2 min read
         </div>
         
-          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa.jpg" alt="">
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/pxc-ji-qun-da-jian.jpg" alt="">
         
         <div class="post-content yue">
-          <h4 id="binlog的模式">binlog的模式</h4>
+          <h4 id="介绍">介绍</h4>
+<p>PXC是Percona XtraDB Cluster的缩写，是一种具有高可用性和高扩展性的MySQL开源集群。它集成了Percona Server和Percona XtraBackup，同时采用了Codership Galera库。</p>
+<h4 id="优点">优点</h4>
+<p>1.准同步复制<br>
+2.多个可同时读写节点，可实现写扩展，较分片方案更进一步<br>
+3.自动节点管理<br>
+4.数据严格一致<br>
+5.服务高可用</p>
+<h4 id="缺点">缺点</h4>
+<p>1.只支持innodb引擎<br>
+2.所有表都要有主键<br>
+3.所有的写操作都将发生在所有节点上，存在写扩大问题<br>
+4.加入新节点，开销大。需要复制完整的数据。</p>
+<h4 id="搭建">搭建</h4>
 <ul>
-<li>Statement Level：Mysql5.7.7之前的版本默认的模式。基于sql语句复制，只会存储sql，不会存储数据，因此无法进行数据恢复，生产环境一般不用此模式</li>
-<li>Row Level：Mysql5.7.7之后的版本默认的模式。基于行的复制，并且会将每一条的数据变化记录到日志文件中。</li>
-<li>Mixed：混合模式</li>
+<li>采用docker形式部署</li>
+<li>拉取镜像</li>
 </ul>
-<p>查询模式命令</p>
-<pre><code>show variables like 'binlog_format';
-mysql&gt; show variables like 'binlog_format';
-+---------------+-------+
-| Variable_name | Value |
-+---------------+-------+
-| binlog_format | ROW   |
-+---------------+-------+
-1 row in set (0.00 sec)
+<pre><code>docker pull percona/percona-xtradb-cluster:5.7
 </code></pre>
-<h4 id="数据的解析">数据的解析</h4>
 <ul>
-<li>将binlog二进制文件解析成sql语句的过程</li>
+<li>重新tag</li>
 </ul>
-<h4 id="恢复工具介绍">恢复工具介绍</h4>
+<pre><code>为了方便，这里重新tag下
+docker tag percona/percona-xtradb-cluster:5.7 pxc
+</code></pre>
 <ul>
-<li>
-<p>正向恢复：</p>
-<ul>
-<li>mysqlbinlog<br>
-利用工具将插入的sql解析成反向的sql语句</li>
+<li>创建数据卷</li>
 </ul>
-</li>
-<li>
-<p>反向恢复</p>
+<pre><code>docker volume create v1
+docker volume create v2
+docker volume create v3
+</code></pre>
 <ul>
-<li>binlog-rollback</li>
-<li>MyFlash</li>
+<li>创建网络</li>
 </ul>
-</li>
-<li>
-<p>延迟从库</p>
-</li>
+<pre><code>docker network create --subnet=172.30.0.0/24 pxc-network
+</code></pre>
+<ul>
+<li>启动容器<br>
+注意等第一个容器启动，确保可连接之后再依次启动第二第三容器</li>
+</ul>
+<pre><code> docker run -d -p 33306:3306 -v v1:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=pxc --name=pxc-node1 --net=pxc-network --ip=172.30.0.100 pxc
+ 
+ docker run -d  -p 33307:3306 -v v1:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=pxc --name=pxc-node2 -e CLUSTER_JOIN=pxc-node1  --net=pxc-network --ip=172.30.0.101 pxc
+ 
+ docker run -d  -p 33308:3306 -v v3:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=pxc --name=pxc-node3 -e CLUSTER_JOIN=pxc-node1  --net=pxc-network --ip=172.30.0.102 pxc
+ 
+</code></pre>
+<h4 id="验证">验证</h4>
+<ul>
+<li>启动容器：<br>
+<a href="https://imgchr.com/i/8UU7MF"><img src="https://s1.ax1x.com/2020/03/17/8UU7MF.md.jpg" alt="8UU7MF.md.jpg" loading="lazy"></a></li>
+<li>查看集群的状态</li>
+</ul>
+<pre><code>show status like '%wsrep%';
+</code></pre>
+<figure data-type="image" tabindex="1"><a href="https://imgchr.com/i/8UU5GV"><img src="https://s1.ax1x.com/2020/03/17/8UU5GV.md.jpg" alt="8UU5GV.md.jpg" loading="lazy"></a></figure>
+<ul>
+<li>创建数据库测试，三个节点都可同步成功<br>
+<a href="https://imgchr.com/i/8Udd9P"><img src="https://s1.ax1x.com/2020/03/17/8Udd9P.jpg" alt="8Udd9P.jpg" loading="lazy"></a></li>
 </ul>
 
         </div>
@@ -151,15 +175,19 @@ mysql&gt; show variables like 'binlog_format';
             <span class="flex-auto">Mysql</span>
           </a>
         
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/y9WBB30Qn/">
+            <span class="flex-auto">Docker</span>
+          </a>
+        
 
 
         <div class="flex justify-between py-8">
           
             <div class="prev-post">
-              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/pxc-ji-qun-da-jian/">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/">
                 <h3 class="post-title">
                   <i class="ri-arrow-left-line"></i>
-                  PXC集群搭建
+                  Docker Haproxy搭建PXC负载均衡
                 </h3>
               </a>
             </div>
@@ -167,9 +195,9 @@ mysql&gt; show variables like 'binlog_format';
 
           
             <div class="next-post">
-              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/">
                 <h3 class="post-title">
-                  Django Web开发入门（一）
+                  Binlog数据恢复的几种方法
                   <i class="ri-arrow-right-line"></i>
                 </h3>
               </a>
