@@ -1,0 +1,465 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浩玩技术栈</title>
+<meta name="description" content="结合博主自身经验，专注分享运维技术文章！" />
+<link rel="shortcut icon" href="https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico?v=1584797020784">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
+<link rel="stylesheet" href="https://https://github.com/lukelemei/lukelemei.github.io/styles/main.css">
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="ri-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a href="https://https://github.com/lukelemei/lukelemei.github.io">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png?v=1584797020784" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">浩玩技术栈</h1>
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E8%8A%82%E7%82%B9%E8%A7%84%E5%88%92">节点规划</a></li>
+<li><a href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87">前期准备</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="ri-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu" style="animation-delay: 0.6000000000000001s">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700">Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a></div>
+    <a class="rss" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Kubernetes V1.15.1搭建</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2020-03-21 / 7 min read
+        </div>
+        
+          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://https://github.com/lukelemei/lukelemei.github.io/post-images/kubernetes-v1151-da-jian.jpg" alt="">
+        
+        <div class="post-content yue">
+          <h4 id="节点规划">节点规划</h4>
+<ul>
+<li>master：192.168.2.11</li>
+<li>node1：192.168.2.22</li>
+<li>node2：192.168.2.33</li>
+<li>主机系统：Centos7.6</li>
+<li>内核版本：4.4.216-1.el7.elrepo.x86_64<br>
+(3.10内核版中有bug，会对docker和k8s造成不稳定，生产环境中建议升级内核版本)</li>
+</ul>
+<h4 id="前期准备">前期准备</h4>
+<ul>
+<li>更改主机名以及hosts解析</li>
+</ul>
+<pre><code>hostnamectl set-hostname master
+hostnamectl set-hostname node1
+hostnamectl set-hostname node2
+</code></pre>
+<ul>
+<li>安装依赖包</li>
+</ul>
+<pre><code>yum install -y conntrack ntpdate ntp ipvsadm ipset jq iptables curl sysstat libseccomp wget vim net-tools git
+</code></pre>
+<ul>
+<li>关闭防火墙 安装，清空 iptables</li>
+</ul>
+<pre><code>systemctl stop firewalld &amp;&amp; systemctl disable firewalld
+yum -y install iptables-services &amp;&amp; systemctl start iptables &amp;&amp; systemctl enable iptables &amp;&amp; iptables -F &amp;&amp; service iptables save
+</code></pre>
+<ul>
+<li>关闭虚拟内存</li>
+</ul>
+<pre><code>swapoff -a &amp;&amp; sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+安装时会检测swap是否关闭
+</code></pre>
+<ul>
+<li>关闭 Selinux</li>
+</ul>
+<pre><code>setenforce 0 &amp;&amp; sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+</code></pre>
+<ul>
+<li>调整内核参数</li>
+</ul>
+<pre><code>cat &gt; k8s.conf &lt;&lt; EOF
+net.bridge.bridge-nf-call-iptables=1 #打开网桥转发功能
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+net.ipv4.tcp_tw_recycle=0
+vm.swappiness=0
+vm.overcommit_memory=1
+vm.panic_on_oom=0
+fs.inotify.max_user_instances=8192
+fs.inotify.max_user_watches=1048576
+fs.file-max=52706963
+fs.nr_open=52706963
+net.ipv6.conf.all.disable_ipv6=1
+EOF
+cp k8s.conf /etc/sysctl.d/k8s.conf
+sysctl -p /etc/sysctl.d/k8s.conf
+</code></pre>
+<ul>
+<li>设置 rsyslogd 和 systemd journald</li>
+</ul>
+<pre><code>持久化保存日志的目录
+mkdir /var/log/journal
+mkdir /etc/systemd/journald.conf.d
+cat &gt; /etc/systemd/journald.conf.d/99-prophet.conf &lt;&lt;EOF
+[Journal]
+# 持久化保存到磁盘
+Storage=persistent
+# 压缩历史日志
+Compress=yes
+SyncIntervalSec=5m
+RateLimitInterval=30s
+RateLimitBurst=1000
+# 最大占用空间10g
+SystemMaxUse=10G
+# 单个日志文件最大 200m
+SystemMaxFileSize=200m
+# 日志保存时间2周
+MaxRetentionSec=2week
+# 不将日志转发到 syslog
+ForwardToSyslog=no
+EOF
+systemctl restart systemd-journald #重启日志进程
+</code></pre>
+<ul>
+<li>升级内核为 4.44</li>
+</ul>
+<pre><code>rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+# 安装完成后检查 /boot/grub2/grub.cfg 中对应内核 menuentry 中是否包含 initrd16 配置，如果没有，再装一次！
+yum --enablerepo=elrepo-kernel install -y kernel-lt
+#  设置开机从新内核启动
+grub2-set-default &quot;CentOS linux (4.4.216-1.el7.elrepo.x86_64) 7 (Core)&quot;
+</code></pre>
+<ul>
+<li>kube-proxy开启ipvs的前置条件</li>
+</ul>
+<pre><code>modprobe br_netfilter
+cat &gt; /etc/sysconfig/modules/ipvs.modules &lt;&lt;EOF
+#!/bin/bash
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+EOF
+chmod 755 /etc/sysconfig/modules/ipvs.modules &amp;&amp; bash
+/etc/sysconfig/modules/ipvs.modules &amp;&amp; lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+</code></pre>
+<ul>
+<li>安装 Docker</li>
+</ul>
+<pre><code>yum install -y yum-utils device-mapper-persistent-data lvm2
+
+yum-config-manager \
+ --add-repo \
+ http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+ 
+yum update -y &amp;&amp; yum install -y docker-ce
+mkdir -p /etc/systemd/system/docker.service.d
+systemctl daemon-reload &amp;&amp; systemctl restart docker &amp;&amp; systemctl enable docker
+</code></pre>
+<ul>
+<li>Kubeadm</li>
+</ul>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+http://mirros.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+
+yum -y install kubeadm-1.15.1 kubectl-1.15.1 kubelet-1.15.1
+systemctl enable kubelet.service
+</code></pre>
+<ul>
+<li>初始化主节点</li>
+</ul>
+<pre><code>#初始化master节点时，kubernetes会拉取相关镜像
+ 生成kubeadm配置文件，修改配置文件里的images下载源、是否允许Master允许业务Pod、网络配置信息
+kubeadm config print init-defaults &gt; kubeadm.conf
+
+vi kubeadm.conf
+//修改默认kubeadm初始化参数如下
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
+kubernetesVersion: v1.15.1
+nodeRegistration:
+  taints:
+  - effect: PreferNoSchedule
+    key: node-role.kubernetes.io/master
+localAPIEndpoint:
+  advertiseAddress: 192.168.2.11   # 这里甜master节点ip
+networking:
+  dnsDomain: cluster.local
+  podSubnet: 10.244.0.0/16
+  serviceSubnet: 172.18.0.0/16
+
+# 使用自定义配置拉取 images
+kubeadm config images pull --config kubeadm.conf
+</code></pre>
+<p><strong>注意：拉取镜像如果不设置，默认会从谷歌服务器拉取，因国内无法访问谷歌，可采取重新tag都方法获取镜像。<br>
+国内k8s镜像站：registry.cn-hangzhou.aliyuncs.com/google_container</strong></p>
+<pre><code>例如：
+docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.15.1 k8s.gcr.io/kube-scheduler:v1.15.1
+</code></pre>
+<ul>
+<li>获取的镜像如下：</li>
+</ul>
+<pre><code>每个节点都需要以下镜像
+k8s.gcr.io/kube-apiserver:v1.15.1
+k8s.gcr.io/kube-controller-manager:v1.15.1
+k8s.gcr.io/kube-scheduler:v1.15.1
+k8s.gcr.io/kube-proxy:v1.15.1
+k8s.gcr.io/pause:3.1
+k8s.gcr.io/etcd:3.3.10
+k8s.gcr.io/coredns:1.3.1
+</code></pre>
+<ul>
+<li>部署master节点</li>
+</ul>
+<pre><code>kubeadm init --config=/root/kubeadm.conf --experimental-upload-certs | tee kubeadm-init.log
+</code></pre>
+<p>部署成功后，会有如下提示：</p>
+<pre><code>Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.2.11:6443 --token abcdef.0123456789abcdef \
+    --discovery-token-ca-cert-hash sha256:7b0e84998468fdf580eedade1e3297a947a0c72a0310f4489f501443223c1079
+</code></pre>
+<ul>
+<li>初始化完成后，设置相关环境变量</li>
+</ul>
+<pre><code>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<ul>
+<li>加入node节点</li>
+</ul>
+<pre><code>在每个节点上，直接运行如下命令
+kubeadm join 192.168.2.11:6443 --token abcdef.0123456789abcdef \
+    --discovery-token-ca-cert-hash sha256:7b0e84998468fdf580eedade1e3297a947a0c72a0310f4489f501443223c1079
+</code></pre>
+<ul>
+<li>部署flannel网络插件</li>
+</ul>
+<pre><code>wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#此网站需要科学上网才能打开
+kubectl create -f kube-flannel.yml
+#如果创建失败，可以手动下载镜像
+quay.io/coreos/flannel:v0.12.0-amd64
+</code></pre>
+
+        </div>
+
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/fZ2I6RiLS/">
+            <span class="flex-auto">Kubernetes</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://https://github.com/lukelemei/lukelemei.github.io/tag/y9WBB30Qn/">
+            <span class="flex-auto">Docker</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
+          
+
+          
+            <div class="next-post">
+              <a href="https://https://github.com/lukelemei/lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/">
+                <h3 class="post-title">
+                  Docker Haproxy搭建PXC负载均衡
+                  <i class="ri-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+      </div>
+    </div>
+
+    <script src="https://https://github.com/lukelemei/lukelemei.github.io/media/prism.js"></script>  
+<script>
+
+Prism.highlightAll()
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+// This should probably be throttled.
+// Especially because it triggers during smooth scrolling.
+// https://lodash.com/docs/4.17.10#throttle
+// You could do like...
+// window.addEventListener("scroll", () => {
+//    _.throttle(doThatStuff, 100);
+// });
+// Only not doing it here to keep this Pen dependency-free.
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+const latestArticle = document.querySelector('.latest-article')
+const readMore = document.querySelector('.read-more')
+const indexPage = document.querySelector('.index-page')
+
+const isHome = location.pathname === '/'
+if (latestArticle) {
+  latestArticle.style.display = isHome ? 'block' : 'none'
+  readMore.style.display = isHome ? 'block' : 'none'
+  indexPage.style.display = isHome ? 'none' : 'block'
+}
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+</script>
+  
+  </body>
+</html>
