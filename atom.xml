@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-21T13:30:23.067Z</updated>
+    <updated>2020-03-21T13:49:35.940Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
     <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
@@ -10,6 +10,291 @@
     <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
     <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 浩玩技术栈</rights>
+    <entry>
+        <title type="html"><![CDATA[Mysql知识梳理（一）]]></title>
+        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/</id>
+        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/">
+        </link>
+        <updated>2020-03-21T13:48:16.000Z</updated>
+        <content type="html"><![CDATA[<p><em><strong>Mysql是运维工程师的必备技能，疫情期间借此机会，重新系统化学习下Mysql数据库，以下摘林晓斌的付费专栏《Mysql实战45讲》，感兴趣的童鞋可以前往<a href="https://time.geekbang.org" title="极客时间">极客时间</a>自行购买！</strong></em></p>
+<figure data-type="image" tabindex="1"><a href="https://imgchr.com/i/3UMlOs"><img src="https://s2.ax1x.com/2020/02/26/3UMlOs.md.png" alt="3UMlOs.md.png" loading="lazy"></a></figure>
+<ul>
+<li>上图为Mysql的逻辑架构图，可以清楚地看到 SQL 语句在 MySQL 的各个功能模块中的执行过程。</li>
+<li>MySQL 可以分为 Server 层和存储引擎层两部分。</li>
+<li>Server 层包括连接器、查询缓存、分析器、优化器、执行器等，涵盖 MySQL 的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。</li>
+<li>存储引擎层负责数据的存储和提取。其架构模式是插件式的，支持 InnoDB、MyISAM、Memory 等多个存储引擎。现在最常用的存储引擎是 InnoDB，它从 MySQL 5.5.5 版本开始成为了默认存储引擎。</li>
+<li>create table 建表的时候，如果不指定引擎类型，默认使用的就是 InnoDB</li>
+<li>数据库里面，长连接是指连接成功后，如果客户端持续有请求，则一直使用同一个连接。短连接则是指每次执行完很少的几次查询就断开连接，下次查询再重新建立一个。</li>
+<li>一条查询语句的执行过程一般是经过连接器、分析器、优化器、执行器等功能模块，最后到达存储引擎。</li>
+<li>与查询流程不一样的是，更新流程还涉及两个重要的日志模块，它们正是我们今天要讨论的主角：redo log（重做日志）和 binlog（归档日志）</li>
+<li>MySQL 可以恢复到半个月内任意一秒的状态</li>
+<li>mysql为了提高更新效率，采用了WAL技术，Write-Ahead Logging，它的关键点就是先写日志，再写磁盘。</li>
+<li>具体来说，当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log（粉板）里面，并更新内存，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面<br>
+<a href="https://imgchr.com/i/3UKjdx"><img src="https://s2.ax1x.com/2020/02/26/3UKjdx.md.png" alt="3UKjdx.md.png" loading="lazy"></a></li>
+<li>write pos 是当前记录的位置，一边写一边后移，写到第 3 号文件末尾后就回到 0 号文件开头。checkpoint 是当前要擦除的位置，也是往后推移并且循环的，擦除记录前要把记录更新到数据文件。</li>
+<li>有了 redo log，InnoDB 就可以保证即使数据库发生异常重启，之前提交的记录都不会丢失，这个能力称为 crash-safe。</li>
+<li>最开始 MySQL 里并没有 InnoDB 引擎。MySQL 自带的引擎是 MyISAM，但是 MyISAM 没有 crash-safe 的能力，binlog 日志只能用于归档</li>
+</ul>
+<h3 id="两种日志有以下三点不同">两种日志有以下三点不同：</h3>
+<ul>
+<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
+<li>redo log 是物理日志，记录的是“在某个数据页上做了什么修改”；binlog 是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。</li>
+<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
+<li>redo log 用于保证 crash-safe 能力。innodb_flush_log_at_trx_commit 这个参数设置成 1 的时候，表示每次事务的 redo log 都直接持久化到磁盘。这个参数我建议你设置成 1，这样可以保证 MySQL 异常重启之后数据不丢失。sync_binlog 这个参数设置成 1 的时候，表示每次事务的 binlog 都持久化到磁盘。这个参数我也建议你设置成 1，这样可以保证 MySQL 异常重启之后 binlog 不丢失。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Nginx面试题]]></title>
+        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/nginx-mian-shi-ti/</id>
+        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/nginx-mian-shi-ti/">
+        </link>
+        <updated>2020-03-21T13:43:24.000Z</updated>
+        <content type="html"><![CDATA[<h4 id="nginx-如何优化优化">Nginx 如何优化优化</h4>
+<p>1.服务优化</p>
+<ul>
+<li>隐藏版本号</li>
+<li>修改用户和组</li>
+<li>expires缓存(一般是图片)</li>
+<li>日志切割</li>
+<li>设置超时时间<br>
+keepalive_timeout   #设置超时时间<br>
+client_header_timeout  #指定请求头的超时时间<br>
+client_body_timeout    #设置请求体超时时间</li>
+</ul>
+<ul>
+<li>Gzip压缩<br>
+Nginx_http_gzip_module压缩模块提供了对文件压缩的功能，以节约网站的带宽，提高用户的访问体验<br>
+默认Nginx已经安装该模块<br>
+gzip on    #开启gzip压缩输出<br>
+gzip_buffers 4 64;   #表示申请了4个单位为64kb的内存作为压缩结果流缓存<br>
+gzip_http_version 1.1  #用于设置http协议版本<br>
+gzip_min_length     #设置允许页面的最小字节<br>
+gzip_vary on;       #让前端的缓存服务器缓存就经过的gzip压缩页面</li>
+</ul>
+<ul>
+<li>防盗链<br>
+Nginx防盗链的原理是加入location项，用正则表达式过滤图片类型文件，对于信任的网站可以正常使用，对于不信任的网址则返回相应的错误页面</li>
+</ul>
+<pre><code>[root@localhost ~]# vim/usr/local/nginx/conf/nginx.conf
+          location ~*\.(jpg|gif|swf)$ {
+            valid_referers none blocked *.benet.com benet.com;
+            if ( $invalid_referer ) {
+               rewrite ^/ http://www.benet.com/error.png;
+            }
+         }
+    ~*.(jpg|gif|swf)$: 匹配不区分大小写，以.jpg 或.gif或 .swf结尾的文件。
+    valid_referers：设置信任的网站，可以正常使用图片。
+    none：浏览器中refer为空的情况，就是直接在浏览器访问图片。
+    blocked：浏览器中refer不为空的情况，但是值被代理或防火墙删除了，这些值不以http://或 https://开头。
+    后面的网址或域名：refer包含相关字符串的网址。
+    if语句：如果链接的来源域名不在valid_referers所列出的列表中， $invalid_referer 为1，则执行后面的操作，即进行重写或返回403页面。
+</code></pre>
+<h4 id="nginx-upsteam几种轮训方式">nginx upsteam几种轮训方式</h4>
+<p><em>nginx的反向代理模块主要是基于upstream实现的，使用一般的upstream方式，其中upstream主要分为三种模式</em></p>
+<ul>
+<li>RR轮询: 默认的反向代理模式，用以平衡各个服务器的负载，若某个服务器宕机，会自动从轮询中剃掉。同时，可以手动指定某台服务器脱离轮询,用于离线检查</li>
+<li>weight 权重: 针对服务器性能不通，用来控制服务器被访问的比例，以实现老客户访问时的快速调度</li>
+<li>ip bash,主要记录了客户端IP访问的目标主机,以实现老用户访问的快速调度</li>
+</ul>
+<h4 id="nginx使用limit_req_zone对同一ip访问进行限流">Nginx使用limit_req_zone对同一IP访问进行限流</h4>
+<pre><code>首先在nginx.conf中的http模块下配置
+limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+区域名称one(自定义)，占用空间大小为10m,平均处理请求速度不能超过每秒一次
+
+在http模块的子模块server下配置
+    location ~* .htm$ {
+    limit_req zone=one burst=5  nodelay;
+    proxy_pass http://backend_tomcat;
+    }
+burst 缓冲队列的长度
+nodelay 不延迟
+真正对限流起作用的就是rate=1r/s和burst=5这2个配置
+</code></pre>
+<h4 id="nginx-如何获取客户端的真实ip">nginx 如何获取客户端的真实IP</h4>
+<p>使用forwarded-fr获取真实IP</p>
+<h4 id="什么是并发-并行-阻塞-异步-同步">什么是并发、并行、阻塞、异步、同步</h4>
+<ul>
+<li>并发/并行: CPU在执行多个任务时的方式，并发表示同一段时间里面有多个进程在同一CPU执行，在极短的时间互相切换使人不会发觉。并行只会出现在多个CPU的情况下，表示同一时刻之内有多个进程在执行</li>
+</ul>
+<p>例子： 在开车的时候有个电话，必须停下车才可以接电话，接完电话继续开车，这就是并发。 如果一边开车一遍接电话，这就是并行</p>
+<ul>
+<li>同步/异步: 关注的是请求和响应的通讯机制，描述的是被调用方。当发出请求后，该请求是否等待结果后再返回，同步就是没有得到结果前不会返回，返回即得到请求结果。异步就是得到发出请求后就直接返回，也可能不会立即得到结果，服务得到结果后再通过通知或者回调函数等方法通知调用者</li>
+</ul>
+<p>例子: 去买咖啡，付了钱在前台等待咖啡制作完毕，就是同步，付了钱不在前台等待，找位置坐下，服务员送过来就是异步</p>
+<ul>
+<li>阻塞/非阻塞: 关注的是请求在等待结果时的状态，描述的是调用方。 阻塞就是在等待结果的时候，当前线程会被挂起，在得到结果之后返回；非阻塞则是没有得到结果之前也不会阻塞当前线程</li>
+</ul>
+<p>例子: 阻塞的情况就是卖咖啡的时候什么都不能做，只能挂起；非阻塞的时候就是在等咖啡的时候可以玩着手机，过一会检查咖啡是否好了</p>
+<h4 id="nginx-跨域">nginx 跨域</h4>
+<p>`首先我们要知道什么是跨域，跨域指的是浏览器不能执行其他网站的脚本，它是由浏览器的同源策略造成的，是浏览器对JavaScript施加的安全限制</p>
+<p>举例:A页面想获取B页面资源，如果a,b页面的协议、端口、域名、子域名不同，所进行的所有访问请求都是跨域的，而浏览器一般为了安全都限制跨域请求，也就是不允许跨域请求资源。注意：跨域其实是浏览器的限制！</p>
+<ul>
+<li>
+<p>如何解决跨域请求？<br>
+Access-Control-Allow-Origin: http://api.bob.com<br>
+Access-Control-Allow-Credentials: true<br>
+Access-Control-Expose-Headers: FooBar<br>
+Content-Type: text/html; charset=utf-8</p>
+</li>
+<li>
+<p>Access-Control-Allow-Origin<br>
+这里大概意思是允许跨域的域名，可以写一个域名，或者写* 代表所有</p>
+</li>
+<li>
+<p>Access-Control-Allow-Credentials<br>
+表示是否允许发送Cookie，默认情况下，Cookie不包括在CORS请求之中。设置为true，表示服务器明确许可，Cookie可以包含在请求中，一起发给服务器，如果服务器不需要浏览器发送的Cookie，删除该字段即可</p>
+</li>
+<li>
+<p>Access-Control-Expose-Headers<br>
+示请求头的字段 动态获取<br>
+`</p>
+</li>
+</ul>
+<h4 id="nginx-location-优先级">nginx location 优先级</h4>
+<p>~ 表示执行一个正则匹配,区分大小写<br>
+~* 表示执行一个正则匹配，不区分大小写<br>
+^~ 表示普通字符匹配。使用前缀匹配，如果匹配，则不再匹配其他location<br>
+= 进行普通字符精准匹配<br>
+@ 它定义一个命名的location，使用在内部定向时，<br>
+location优先级说明</p>
+<p>在nginx的location和匹配中的location的顺序没有太大关系。正location表达式的类型有关。相同类型的表达式，字符串长的会优先匹配</p>
+<p>等号类型(=)的优先级最高，一旦匹配成功，则不再查找其他匹配项<br>
+^~ 类型表达式，一旦匹配成功，则不再查找其他匹配项<br>
+正则表达式(~ ~*)的优先级次之，如果多个location的正则能匹配的话，则使用正则表达式最长的那个</p>
+<h4 id="nginx-rewrite重写">nginx rewrite重写</h4>
+<p>rewrite功能就是，使用nginx提供的全局变量或者自己设置的变量，结合正则表达式和标志位实现url重写及重定向。rewrite只能放在server location if中，并且只能对域名后面的除去参数外的字符串起作用</p>
+<h4 id="nginx-常用的模块名称及解释">nginx 常用的模块（名称及解释）</h4>
+<ul>
+<li>Nginx 内置模块<br>
+http_ssl_module 模块为HTTPS提供必要的支持，需要使用openssl</li>
+<li>http_flv_module  通过返回以请求偏移位置开始的文件内容，该模块专门处理 在查询串中有start参数的请求, 和有预先设置到FLV头部的请求。</li>
+<li>http_gzip_static_module 允许发送以“.gz”作为文件扩展名的预压缩文件，以替代发送普通文件。</li>
+<li>http_stub_status_module nginx基础查询模块，可以查看连接数、请求书、header请求信息等</li>
+<li>http_secure_link_module nginx安全下载模块可以给服务器文件链接添加时间戳和校验码，从而保护服务器文件不被任意下载盗用</li>
+<li>http_random_index_module   可在目录中选择随机主页</li>
+<li>http_realip_module   用于接受前端发来的 IP head 信息，从获取到真是的用户IP</li>
+<li>http_addition_module  响应之前或者之后追加文本内容，比如想在站点底部追加一个js或者css，可以使用这个模块来实现，这个模块和淘宝开发的nginx footer模块有点类似,但是还是有不同. 这个模块需要依赖子请求，nginx footer依赖nginx写死的配置</li>
+<li>http_sub_module  该模块是一个过滤器，它修改网站响应内容中的字符串，比如你想把响应内容中的‘abcdocker’全部替换成‘aaaaa‘</li>
+<li>http_dav_module  该模块是一种基于 HTTP 1.1协议的通信协议。它扩展了HTTP 1.1，在GET、POST、HEAD等几个HTTP标准方法以外添加了一些新的方法，使应用程序可直接对Web Server直接读写，并支持写文件锁定(Locking)及解锁(Unlock)，还可以支持文件的版本控制</li>
+<li>http_perl_module  模块用于在Perl中实现位置和变量处理程序，并将Perl调用插入SSL。需要安装perl-devel perl-ExtUtils-Embed</li>
+<li>http_geoip_module  使用预编译的MaxMind数据库解析客户端IP地址，得到变量值</li>
+<li>http_xslt_module  该模块是一个使用多个 XSLT stylesheets（样式表）将xml相应进行相应变换的过滤器模块。</li>
+<li>http_mp4_module   主要是以 .mp4、.m4v、和.m4a为扩展名的文件， 提供伪流媒体服务端支持。</li>
+</ul>
+<h4 id="-第三方模块">------&gt; 第三方模块</h4>
+<pre><code>headers-more-nginx-module-master   自定义请求头模块
+
+ngx_http_substitutions_filter_module  有时候需要使用Nginx的反向代理某站点，并通过 httpsubmodule 和ngx_http_substitutions_filter_module 模块替换正文内容和URL。 官方自带的模块HttpSubModule 只能匹配1条规则，但是使用第三方模块ngx_http_substitutions_filter_module 可以匹配多条规则。
+
+nginx_upstream_check_module-master  nginx自带是没有针对负载均衡后端节点的健康检查的，但是可以通过默认自带的ngx_http_proxy_module模块和ngx_http_upstream_module模块中的相关指令来完成当后端节点出现故障时，自动切换到健康节点来提供访问，但是还会有请求转发到后端的这台后端节点上面去
+
+lua-nginx-module  该模块将Lua解释器或LuaJIT 2嵌入到nginx内核中，并通过cosocket和Nginx子请求将功能强大的Lua线程（又名Lua协程）集成到Nginx事件模型中。
+
+ngx_cache_purge-master   此模块可以清理 nginx 的 FastCGI、proxy、 SCGI 和 uWSGI 的缓存
+
+echo-nginx-module-master 提供直接在 Nginx 配置使用包括 &quot;echo&quot;, &quot;sleep&quot;, &quot;time&quot; 等指令。
+
+ngx_devel_kit  它具有处理通用任务的功能和宏，这些任务目前没有通用代码作为核心发行版的一部分。NDK本身增加了一些从用户角度来看的功能-旨在帮助减少Nginx模块开发人员需要编写的代码。
+</code></pre>
+<h4 id="nginx-反向代理和正向代理区别">nginx 反向代理和正向代理区别</h4>
+<ul>
+<li>正向代理<br>
+正向代理 是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。就像要访问google用vpn代理翻墙去访问</li>
+<li>反向代理<br>
+对于客户端而言它就像是原始服务器，并且客户端不需要进行任何特别的设置。客户端向反向代理 的命名空间(name-space)中的内容发送普通请求，接着反向代理将判断向何处(原始服务器)转交请求，并将获得的内容返回给客户端，就像这些内容 原本就是它自己的一样。（用户不知道要访问真正的服务器<br>
+以租房为例解释正向代理和反向代理</li>
+</ul>
+<p>正向代理 客户端 &lt;一&gt; 代理 一&gt;服务端</p>
+<p>A(客户端)想租C(服务端)的房子,但是A(客户端)并不认识C(服务端)租不到。</p>
+<p>B(代理)认识C(服务端)能租这个房子所以你找了B(代理)帮忙租到了这个房子。</p>
+<p>这个过程中C(服务端)不认识A(客户端)只认识B(代理)</p>
+<p>C(服务端)并不知道A(客户端)租了房子，只知道房子租给了B(代理)。</p>
+<p>反向代理 客户端 一&gt;代理 &lt;一&gt; 服务端</p>
+<p>A(客户端)想租一个房子,B(代理)就把这个房子租给了他。</p>
+<p>这时候实际上C(服务端)才是房东。</p>
+<p>B(代理)是中介把这个房子租给了A(客户端)。</p>
+<p>这个过程中A(客户端)并不知道这个房子到底谁才是房东</p>
+<p>他都有可能认为这个房子就是B(代理)的</p>
+<p>由上的例子我们可以知道正向代理和反向代理的区别在于代理的对象不一样,正向代理的代理对象是客户端,反向代理的代理对象是服务端。</p>
+<p>请陈述stub_status和sub_filter指令的作用是什么?<br>
+Stub_status指令: 该指令用于了解Nginx当前状态的当前状态，如当前的活动连接，接受和处理当前读/写/等待连接的总数</p>
+<p>Sub_filter指令: 它用于搜索和替换响应中的内容，并快速修复陈旧的数据</p>
+<p>请列举Nginx和Apache 之间的不同点<br>
+<a href="https://imgchr.com/i/30ueNq"><img src="https://s2.ax1x.com/2020/02/27/30ueNq.png" alt="30ueNq.png" loading="lazy"></a></p>
+<h4 id="nginx-和lvs-区别">Nginx 和LVS 区别</h4>
+<p>1.高并发连接：官方测试能够支撑5万并发连接，在实际生产环境中跑到2——3万并发连接数。<br>
+2.内存消耗少：在3万并发连接数下，开启的10个nginx进程才消耗150M内存（150*10=150M）。<br>
+3.配置文件非常简单：风格跟程序一样通俗易懂。<br>
+4.成本低廉：nginx为开源软件，可以免费使用。而购买F5 big-ip、netscaler等硬件负载均衡交换机则需要十多万至几十万人民币。<br>
+5.支持rewrite重写规则：能够根据域名、url的不同，将http请求分到不同的后端服务器群组。<br>
+6.内置的健康检查功能：如果nginx proxy后端的某台web服务器宕机了，不会影响前端访问。<br>
+7.节省带宽：支持gzip压缩，可以添加浏览器本地缓存的header头。</p>
+<h4 id="nginx-lvs-haproxy区别">Nginx、LVS、haproxy区别</h4>
+<ul>
+<li>Nginx 优点</li>
+</ul>
+<p>工作在网络的7层之上，可以针对http应用做一些分流的策略，比如针对域名、目录结构，它的正则规则比HAProxy更为强大和灵活，这也是它目前广泛流行的主要原因之一，Nginx单凭这点可利用的场合就远多于LVS了。<br>
+Nginx对网络稳定性的依赖非常小，理论上能ping通就就能进行负载功能，这个也是它的优势之一；相反LVS对网络稳定性依赖比较大。<br>
+Nginx安装和配置比较简单，测试起来比较方便，它基本能把错误用日志打印出来。LVS的配置、测试就要花比较长的时间了，LVS对网络依赖比较大。<br>
+可以承担高负载压力且稳定，在硬件不差的情况下一般能支撑几万次的并发量，负载度比LVS相对小些。<br>
+Nginx可以通过端口检测到服务器内部的故障，比如根据服务器处理网页返回的状态码、超时等等，并且会把返回错误的请求重新提交到另一个节点，不过其中缺点就是不支持url来检测。比如用户正在上传一个文件，而处理该上传的节点刚好在上传过程中出现故障，Nginx会把上传切到另一台服务器重新处理，而LVS就直接断掉了，如果是上传一个很大的文件或者很重要的文件的话，用户可能会因此而不满。<br>
+Nginx不仅仅是一款优秀的负载均衡器/反向代理软件，它同时也是功能强大的Web应用服务器。LNMP也是近几年非常流行的web架构，在高流量的环境中稳定性也很好。<br>
+Nginx现在作为Web反向加速缓存越来越成熟了，速度比传统的Squid服务器更快，可以考虑用其作为反向代理加速器。<br>
+Nginx可作为中层反向代理使用，这一层面Nginx基本上无对手，唯一可以对比Nginx的就只有 lighttpd了，不过 lighttpd目前还没有做到Nginx完全的功能，配置也不那么清晰易读，社区资料也远远没Nginx活跃。<br>
+Nginx也可作为静态网页和图片服务器，这方面的性能也无对手。还有Nginx社区非常活跃，第三方模块也很多。</p>
+<ul>
+<li>Nginx 缺点</li>
+</ul>
+<p>Nginx仅能支持http、https和Email协议，这样就在适用范围上面小些，这个是它的缺点。<br>
+对后端服务器的健康检查，只支持通过端口来检测，不支持通过url来检测。不支持Session的直接保持，但能通过ip_hash来解决。</p>
+<ul>
+<li>LVS 优点</li>
+</ul>
+<ol>
+<li>抗负载能力强、是工作在网络4层之上仅作分发之用，没有流量的产生，这个特点也决定了它在负载均衡软件里的性能最强的，对内存和cpu资源消耗比较低。</li>
+<li>配置性比较低，这是一个缺点也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率。</li>
+<li>工作稳定，因为其本身抗负载能力很强，自身有完整的双机热备方案，如LVS+Keepalived。</li>
+<li>无流量，LVS只分发请求，而流量并不从它本身出去，这点保证了均衡器IO的性能不会受到大流量的影响。</li>
+<li>应用范围比较广，因为LVS工作在4层，所以它几乎可以对所有应用做负载均衡，包括http、数据库、在线聊天室等等。</li>
+</ol>
+<ul>
+<li>LVS 缺点</li>
+</ul>
+<ol>
+<li>软件本身不支持正则表达式处理，不能做动静分离；而现在许多网站在这方面都有较强的需求，这个是Nginx/HAProxy+Keepalived的优势所在。</li>
+<li>如果是网站应用比较庞大的话，LVS/DR+Keepalived实施起来就比较复杂了，特别后面有 Windows Server的机器的话，如果实施及配置还有维护过程就比较复杂了，相对而言，Nginx/HAProxy+Keepalived就简单多了。</li>
+</ol>
+<ul>
+<li>HAProxy优点<br>
+HAProxy也是支持虚拟主机的。<br>
+HAProxy的优点能够补充Nginx的一些缺点，比如支持Session的保持，Cookie的引导；同时支持通过获取指定的url来检测后端服务器的状态。<br>
+HAProxy跟LVS类似，本身就只是一款负载均衡软件；单纯从效率上来讲HAProxy会比Nginx有更出色的负载均衡速度，在并发处理上也是优于Nginx的。<br>
+HAProxy支持TCP协议的负载均衡转发，可以对MySQL读进行负载均衡，对后端的MySQL节点进行检测和负载均衡，大家可以用LVS+Keepalived对MySQL主从做负载均衡。<br>
+HAProxy负载均衡策略非常多，HAProxy的负载均衡算法现在具体有如下8种：<br>
+① roundrobin，表示简单的轮询，这个不多说，这个是负载均衡基本都具备的；<br>
+② static-rr，表示根据权重，建议关注；<br>
+③ leastconn，表示最少连接者先处理，建议关注；<br>
+④ source，表示根据请求源IP，这个跟Nginx的IP_hash机制类似，我们用其作为解决session问题的一种方法，建议关注；<br>
+⑤ ri，表示根据请求的URI；<br>
+⑥ rl_param，表示根据请求的URl参数’balance url_param’ requires an URL parameter name；<br>
+⑦ hdr(name)，表示根据HTTP请求头来锁定每一次HTTP请求；<br>
+⑧ rdp-cookie(name)，表示根据据cookie(name)来锁定并哈希每一次TCP请求。</li>
+</ul>
+<h4 id="请解释nginx服务器上的master和worker进程分别是什么">请解释Nginx服务器上的Master和Worker进程分别是什么?</h4>
+<p>Master进程：读取及评估配置和维持<br>
+Worker进程：处理请求</p>
+<p>请解释Nginx如何处理HTTP请求。</p>
+<ol>
+<li>三次握手后 系统内核收到请求根据端口负载均衡的分配到某个worker</li>
+<li>nginx 会分配一个512byte链接内存池</li>
+<li>初始化nginx的http模块并等待用户请求，假设用户在client_header_timeout指令设置的值内还没再次请求，则链接超时</li>
+<li>处理用户发送请求(处理链接和处理请求还是有很大区别的，以下是处理请求操作需要校验请求头等)</li>
+</ol>
+<h4 id="解释下large_client_header_buffers指令设置的含义">解释下large_client_header_buffers指令设置的含义：</h4>
+<p>4 8k 并不是48k nginx先会分配8k内存假设header超过第一次分配的8k 则再会分配第二个8k 也就是 16k 那么 4 8k 真正意思是 最多分配4个8k也就是32k</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Kubernetes V1.15.1搭建]]></title>
         <id>https://https://github.com/lukelemei/lukelemei.github.io/post/kubernetes-v1151-da-jian/</id>
