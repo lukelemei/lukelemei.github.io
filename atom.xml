@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://https://github.com/lukelemei/lukelemei.github.io</id>
+    <id>https://lukelemei.github.io</id>
     <title>浩玩技术栈</title>
-    <updated>2020-03-21T13:49:35.940Z</updated>
+    <updated>2020-03-21T15:12:33.297Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://https://github.com/lukelemei/lukelemei.github.io"/>
-    <link rel="self" href="https://https://github.com/lukelemei/lukelemei.github.io/atom.xml"/>
+    <link rel="alternate" href="https://lukelemei.github.io"/>
+    <link rel="self" href="https://lukelemei.github.io/atom.xml"/>
     <subtitle>结合博主自身经验，专注分享运维技术文章！</subtitle>
-    <logo>https://https://github.com/lukelemei/lukelemei.github.io/images/avatar.png</logo>
-    <icon>https://https://github.com/lukelemei/lukelemei.github.io/favicon.ico</icon>
+    <logo>https://lukelemei.github.io/images/avatar.png</logo>
+    <icon>https://lukelemei.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 浩玩技术栈</rights>
     <entry>
         <title type="html"><![CDATA[Mysql知识梳理（一）]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/">
+        <id>https://lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/</id>
+        <link href="https://lukelemei.github.io/post/mysql-zhi-shi-shu-li-yi/">
         </link>
         <updated>2020-03-21T13:48:16.000Z</updated>
         <content type="html"><![CDATA[<p><em><strong>Mysql是运维工程师的必备技能，疫情期间借此机会，重新系统化学习下Mysql数据库，以下摘林晓斌的付费专栏《Mysql实战45讲》，感兴趣的童鞋可以前往<a href="https://time.geekbang.org" title="极客时间">极客时间</a>自行购买！</strong></em></p>
@@ -46,8 +46,8 @@
     </entry>
     <entry>
         <title type="html"><![CDATA[Nginx面试题]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/nginx-mian-shi-ti/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/nginx-mian-shi-ti/">
+        <id>https://lukelemei.github.io/post/nginx-mian-shi-ti/</id>
+        <link href="https://lukelemei.github.io/post/nginx-mian-shi-ti/">
         </link>
         <updated>2020-03-21T13:43:24.000Z</updated>
         <content type="html"><![CDATA[<h4 id="nginx-如何优化优化">Nginx 如何优化优化</h4>
@@ -297,8 +297,8 @@ Worker进程：处理请求</p>
     </entry>
     <entry>
         <title type="html"><![CDATA[Kubernetes V1.15.1搭建]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/kubernetes-v1151-da-jian/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/kubernetes-v1151-da-jian/">
+        <id>https://lukelemei.github.io/post/kubernetes-v1151-da-jian/</id>
+        <link href="https://lukelemei.github.io/post/kubernetes-v1151-da-jian/">
         </link>
         <updated>2020-03-21T13:20:09.000Z</updated>
         <content type="html"><![CDATA[<h4 id="节点规划">节点规划</h4>
@@ -532,8 +532,8 @@ quay.io/coreos/flannel:v0.12.0-amd64
     </entry>
     <entry>
         <title type="html"><![CDATA[Docker Haproxy搭建PXC负载均衡]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/">
+        <id>https://lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/</id>
+        <link href="https://lukelemei.github.io/post/docker-haproxy-da-jian-pxc-fu-zai-jun-heng/">
         </link>
         <updated>2020-03-17T13:54:14.000Z</updated>
         <content type="html"><![CDATA[<h4 id="pxc集群信息">pxc集群信息</h4>
@@ -624,8 +624,8 @@ create user 'haproxy'@'%' identified by '';
     </entry>
     <entry>
         <title type="html"><![CDATA[PXC集群搭建]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/pxc-ji-qun-da-jian/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/pxc-ji-qun-da-jian/">
+        <id>https://lukelemei.github.io/post/pxc-ji-qun-da-jian/</id>
+        <link href="https://lukelemei.github.io/post/pxc-ji-qun-da-jian/">
         </link>
         <updated>2020-03-17T13:52:38.000Z</updated>
         <content type="html"><![CDATA[<h4 id="介绍">介绍</h4>
@@ -694,8 +694,8 @@ docker volume create v3
     </entry>
     <entry>
         <title type="html"><![CDATA[Binlog数据恢复的几种方法]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/">
+        <id>https://lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/</id>
+        <link href="https://lukelemei.github.io/post/binlog-shu-ju-hui-fu-de-ji-chong-fang-fa/">
         </link>
         <updated>2020-03-11T00:58:22.000Z</updated>
         <content type="html"><![CDATA[<h4 id="binlog的模式">binlog的模式</h4>
@@ -742,8 +742,8 @@ mysql&gt; show variables like 'binlog_format';
     </entry>
     <entry>
         <title type="html"><![CDATA[Django Web开发入门（一）]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
+        <id>https://lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/</id>
+        <link href="https://lukelemei.github.io/post/django-web-kai-fa-ru-men-yi/">
         </link>
         <updated>2020-03-10T12:04:15.000Z</updated>
         <content type="html"><![CDATA[<h4 id="安装">安装</h4>
@@ -839,8 +839,8 @@ urlpatterns = [
     </entry>
     <entry>
         <title type="html"><![CDATA[玩转 Docker（二）]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockerer/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockerer/">
+        <id>https://lukelemei.github.io/post/wan-zhuan-dockerer/</id>
+        <link href="https://lukelemei.github.io/post/wan-zhuan-dockerer/">
         </link>
         <updated>2020-03-05T12:47:13.000Z</updated>
         <content type="html"><![CDATA[<h4 id="docker-网络">Docker 网络</h4>
@@ -944,8 +944,8 @@ ARG
     </entry>
     <entry>
         <title type="html"><![CDATA[玩转 Docker（一）]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/wan-zhuan-dockeryi/">
+        <id>https://lukelemei.github.io/post/wan-zhuan-dockeryi/</id>
+        <link href="https://lukelemei.github.io/post/wan-zhuan-dockeryi/">
         </link>
         <updated>2020-03-05T12:39:30.000Z</updated>
         <content type="html"><![CDATA[<h4 id="虚拟化与docker">虚拟化与docker</h4>
@@ -1146,8 +1146,8 @@ data/testSyc
     </entry>
     <entry>
         <title type="html"><![CDATA[CentOS6.X 安装zabbix-agent]]></title>
-        <id>https://https://github.com/lukelemei/lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/</id>
-        <link href="https://https://github.com/lukelemei/lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/">
+        <id>https://lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/</id>
+        <link href="https://lukelemei.github.io/post/centos6x-an-zhuang-zabbix-agent/">
         </link>
         <updated>2020-03-03T13:32:13.000Z</updated>
         <content type="html"><![CDATA[<p><strong>1.安装zabbix-agent</strong></p>
